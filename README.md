@@ -29,21 +29,21 @@ docker compose exec app php artisan storage:link || true
 
 # 2) Frontend (build & dev)
 # Build production SPA → frontend/dist
-cd frontend && npm i && npm run build 
+cd frontend/task-scheduler && npm i && npm run build 
 
 # Preview the built SPA locally (uses dist/)
-cd frontend && npm run preview
+cd frontend/task-scheduler && npm run preview
 
 # Local development (hot reload, Vite dev server)
 # Vite runs at http://localhost:5173 by default
-cd frontend && npm i && npm run dev
+cd frontend/task-scheduler  && npm i && npm run dev
 ```
 ## Typical dev flow
 Run backend via Docker: 
 ```docker compose up -d```
 
 Run frontend locally with hot reload: 
-```cd frontend && npm run dev ```
+```cd frontend/task-scheduler && npm run dev ```
 
 Access app at http://localhost:5173/
 
