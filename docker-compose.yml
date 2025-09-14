@@ -1,0 +1,59 @@
+networks:
+  app_net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ${PHP_DOCKERFILE:-docker/php/Dockerfile}
+    container_name: ${APP_CONTAINER_NAME:-laravel-app}
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      PHP_IDE_CONFIG: serverName=${PHP_IDE_SERVER_NAME:-laravel}
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    networks:
+      app_net:
+        aliases:
+          - ${APP_ALIAS:-app}
+
+  nginx:
+    image: ${NGINX_IMAGE:-nginx:alpine}
+    container_name: ${NGINX_CONTAINER_NAME:-laravel-nginx}
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./backend:/var/www/html:ro
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      app_net:
+        aliases:
+          - ${NGINX_ALIAS:-web}
+
+  mysql:
+    image: mysql:8.4
+    container_name: ${MYSQL_CONTAINER_NAME:-laravel-mysql}
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+      MYSQL_USER: ${DB_USERNAME:-laravel}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT:-33066}:3306"
+    restart: unless-stopped
+    networks:
+      app_net:
+        aliases:
+          - ${MYSQL_ALIAS:-mysql}

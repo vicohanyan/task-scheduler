@@ -1,0 +1,8 @@
+.idea
+frontend/dist
+frontend/node_modules
+backend/storage
+backend/database
+backend/vendor
+backend/bootstrap/cache
+backend/public
