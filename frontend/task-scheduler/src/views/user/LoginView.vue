@@ -22,7 +22,7 @@ async function onLogin() {
     error.value = '';
     const credentials = await login(email.value, password.value);
     localStorage.setItem('token', credentials.token);
-    await router.push('/tasks');
+    await router.push('/tasks-list');
   } catch (e: any) {
     error.value = e.message || 'Login failed';
   }
